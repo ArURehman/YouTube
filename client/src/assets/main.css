@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base{
+    *{
+        @apply m-0 p-0 box-border font-Roboto overflow-hidden no-underline
+    }
+
+    li, a, button{
+        @apply decoration-inherit
+    }
+}

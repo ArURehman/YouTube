@@ -1,5 +1,5 @@
 const express = require('express')
-const sql = require('mssql')
+const sql = require('sequelize')
 const cors = require('cors')
 const config = require('./config/config.js')
 
@@ -10,18 +10,22 @@ const app = express()
 app.use(cors());
 app.use(express.json());
 
+//Routes
+// route::user
+app.use('/api/user', require('./routes/userRoutes.js'))
 
+//setting up sequelize
+const sequelize = new sql.Sequelize(config.db)
 
-//connect to database
-sql.connect(config.db)
-    .then((pool) => {
-        console.log('Database connected successfully')
-        //passing the pool to the app
-        app.locals.db = pool
-
-        //start the server
-        app.listen(port, () => {console.log('Listening on port: http://localhost:' + port)})
+//connecting to database
+sequelize
+    .authenticate()
+    .then(() => {
+        app.listen(port, () => {console.log('Listening at port: ' + port)})
+        console.log('Connected to database')
     })
     .catch((err) => {
-        console.log('Error on DB Connect -> ' + err.message)
+        console.log('Error while connecting to Database: ' + err)
     })
+
+module.exports = sequelize
