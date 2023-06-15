@@ -1,7 +1,8 @@
 const express = require('express')
-const sql = require('sequelize')
 const cors = require('cors')
 const config = require('./config/config.js')
+const cookieParser = require('cookie-parser')
+const sequelize = require('./database.js')
 
 const port = config.app.port
 const app = express()
@@ -9,23 +10,23 @@ const app = express()
 //Middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 //Routes
-// route::user
-app.use('/api/user', require('./routes/userRoutes.js'))
+// route::authentication::login || signup
+app.use('/api/auth', require('./routes/authRoutes.js'))
 
-//setting up sequelize
-const sequelize = new sql.Sequelize(config.db)
+//connect to database
+sequelize.authenticate()
+    .then(() => console.log('Database connected'))
+    .catch(err => console.log(err))
 
-//connecting to database
-sequelize
-    .authenticate()
+//syncing database
+sequelize.sync({force: true})
     .then(() => {
-        app.listen(port, () => {console.log('Listening at port: ' + port)})
-        console.log('Connected to database')
+        app.listen(port, () => {
+            console.log(`Server is running on port ${port}`)
+        })
+        console.log('Database synced')
     })
-    .catch((err) => {
-        console.log('Error while connecting to Database: ' + err)
-    })
-
-module.exports = sequelize
+    .catch(err => console.log(err))
