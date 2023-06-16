@@ -15,12 +15,16 @@ module.exports.putFile = async (key, buffer) => {
 
 module.exports.getFile = async (key) => {
 
-    const s3 = new S3({})
-    const params = {
-        Bucket: config.s3.bucketName,
-        Key: key
+    try{
+        const s3 = new S3({})
+        const params = {
+            Bucket: config.s3.bucketName,
+            Key: key
+        }
+        return s3.getObject(params).createReadStream();
+    }catch(err){
+        console.log(err);
     }
-    return s3.getObject(params).createReadStream();
 }
 
 module.exports.deleteFile = async (key) => {

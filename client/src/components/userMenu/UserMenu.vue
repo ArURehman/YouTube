@@ -8,13 +8,13 @@
             </div>
         </div>
         <div class="bg-almostBlack w-full h-[79%] overflow-y-auto scrollbar-thin scrollbar-thumb-gray scrollbar-track-searchBarGray scrollbar-thumb-rounded">
-            <button class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
+            <button @click="gotoCreateChannel" class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
                 <font-awesome-icon class="mt-2 ml-1" icon="fa-solid fa-user" size="xs" /><span class="mx-3 mt-[6px]">Your Channel</span>
             </button>
             <hr class="border-none h-[2px] bg-gray my-1">   
             <div class="">
                 <p class="text-sm ml-1 font-medium">Notiifications & Preferences</p>
-                <!-- <PrefCheck/> -->
+                <PrefCheck/>
             </div>
             <hr class="border-none h-[2px] bg-gray my-1">   
             <button @click="logoutUser" class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
@@ -28,13 +28,13 @@
 </template>
 
 <script>
-// import PrefCheck from '../modals/PrefCheck.vue';
+import PrefCheck from './PrefCheck.vue'
 import { useUserStore } from '../../stores/userStore'
 import axios from 'axios'
 
 export default{
     name: 'UserMenu',
-    // components: {PrefCheck},
+    components: {PrefCheck},
     data(){
         return{
             email: useUserStore().getEmail,
@@ -47,11 +47,14 @@ export default{
             axios.post('/api/auth/logout')
             .then(res => {
                 useUserStore().setUser(null)
-                window.location.reload()
+                useUserStore().$state.authenticated = false
             })
             .catch(err => {
                 console.log(err)
             })
+        },
+        gotoCreateChannel(){
+            this.$router.push({name: 'CreateChannel'})
         }
     }
 }

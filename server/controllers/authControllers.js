@@ -3,12 +3,10 @@ const { User } = require('../models');
 const config = require('../config/config')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-const crypto = require('node:crypto');
 const { putFile } = require('../utils/s3');
 const { Op } = require('sequelize');
 const { DateTime } = require('luxon');
-
-const randomKey = () => {return crypto.randomBytes(32).toString('hex')}
+const { randomKey } = require('../utils/randomKey');
 
 module.exports.signupController = createController(
     async (req, res) => {
@@ -66,10 +64,8 @@ module.exports.loginController = createController(
                     {expiresIn: '24h'}
                 )
                 //Sending back token as cookie
-                res.cookie('jwt', token, {
-                    httpOnly: true,
-                    maxAge: 24*60*60*1000
-                })
+                res.cookie('jwt', token, {httpOnly: true, maxAge: 24*60*60*1000})
+                res.send({message: "User Authenticated Successfully"})
             }
             else{
                 return res.status(401).send({message: "Invalid Credentials"})

@@ -1,30 +1,35 @@
-// const { sequelize, Sequelize } = require('../server')
-// const User = require('./userModel'); 
+const sequelize = require('../database')
+const {DataTypes} = require('sequelize')
 
-// const Channel = sequelize.define('Channel', {
-//   ChannelId: {
-//     type: Sequelize.INTEGER,
-//     allowNull: false,
-//     primaryKey: true,
-//     autoIncrement: true,
-//   },
-//   UserID:{
-//     type:Sequelize.INTEGER,
-//     allowNull:false,
-//   },
-//   B_email: {
-//     type: Sequelize.STRING(255),
-//     allowNull: true,
-//   },
-//   descriptions: {
-//     type: Sequelize.STRING(255),
-//     allowNull: true,
-//   },
-//   Banner_Pic: {
-//     type: Sequelize.STRING(255),
-//     allowNull: false,
-//   },
-// });
-// Channel.belongsto(User, { foreignKey: 'UserID' });
-// module.exports = Channel;
+const Channel = sequelize.define('Channel', {
 
+        id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            primaryKey: true,
+        },
+        UserID:{
+            type:DataTypes.STRING,
+            allowNull:false,
+            unique:true,
+        },
+        B_email: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Description: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Banner_Pic: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+    }
+);
+
+Channel.associate = (models) => {
+    Channel.belongsTo(models.User, {foreignKey: 'UserID', targetKey: 'id'})
+}
+
+module.exports = Channel;

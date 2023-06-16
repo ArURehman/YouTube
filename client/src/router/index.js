@@ -8,12 +8,13 @@ import Library from '../views/MainSite/Library.vue'
 
 import Login from '../views/Authentication/Login.vue'
 import Register from '../views/Authentication/SignUp.vue'
+import CreateChannel from '../views/CreateChannel.vue'
 import MainSite from '../views/MainSite.vue'
 
 import Channel from '../views/Channel/Channel.vue'
-import About from '../views/Channel/Channel.vue'
-import CHome from '../views/Channel/Channel.vue'
-import Upload from '../views/Channel/Channel.vue'
+import About from '../views/Channel/About.vue'
+import CHome from '../views/Channel/Home.vue'
+import Upload from '../views/Channel/Upload.vue'
 
 
 const router = createRouter({
@@ -83,6 +84,11 @@ const router = createRouter({
       path: '/register',
       name : 'Register',
       component: Register
+    },
+    {
+      path: '/create-channel',
+      name: 'CreateChannel',
+      component: CreateChannel
     }
   ]
 })

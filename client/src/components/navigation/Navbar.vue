@@ -32,7 +32,7 @@ export default{
       menuOpen: false,
       notifOpen: false,
       searchText: '',
-      URL: "http://localhost:4000/api/file/" + useUserStore().getProfilePic
+      URL: ''
     }
   },
   methods: {
@@ -43,15 +43,11 @@ export default{
       this.$emit('toggleSidebar')
     },
     setProfileURL() {
-        axios.get('/api/user/profilePic')
-        .then((res) => {
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-    }
+      if(useUserStore().getProfilePic === '') return
+      this.URL = "http://localhost:4000/api/file/" + useUserStore().getProfilePic
+    },
   },
-  updated(){
+  mounted(){
     axios.get('/api/auth/info')
     .then(res => {
       useUserStore().setUser(res.data.user)
