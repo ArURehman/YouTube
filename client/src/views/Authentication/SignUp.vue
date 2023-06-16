@@ -1,5 +1,5 @@
 <template>
-    <div @click.self="emitCloseSignUp();emitOpenLogin()" class="w-full h-full bg-searchBarGray absolute text-white">
+    <div @click.self="gotoMainSite" class="w-full h-full bg-searchBarGray absolute text-white">
         <div class="w-72 h-[26rem] bg-almostBlack m-auto relative z-30 top-32 rounded-xl p-4 flex-col">
             <div class="mx-[4.7rem] mt-5 flex gap-1">
                 <font-awesome-icon icon="fa-brands fa-youtube" size="2xl" style="color: #ff0000;" />
@@ -21,16 +21,16 @@
                 <div class="pb-2 pt-2 pl-[10px] flex gap-2 font-Roboto text-sm">
                     <font-awesome-icon class="mt-[2px]" icon="fa-solid fa-camera-retro" size="md" style="color: #ffffff;" />
                     <div class="relative">
-                        <input ref="imageFile" type="file" name="image" id="image" accept="image/*" class="hidden" required>
-                        <label for="image" class="cursor-pointer bg-almostBlack hover:bg-gray text-white py-2 px-4 rounded-full">
-                            Select Profile Pic
+                        <input ref="imageFile" @change="displayFileName" type="file" name="image" id="image" accept="image/*" class="hidden" required>
+                        <label ref="imageLabel" for="image" class="cursor-pointer bg-almostBlack hover:bg-gray text-white py-2 px-4 rounded-full">
+                            {{ message }}
                         </label>
                     </div>
 
                 </div>
                 <div class="mt-5 px-2 flex justify-around gap-2">
                     <button ref="signUp" type="submit" class="border-2 border-[#ff0000] duration-300 hover:font-medium rounded-xl px-3 py-2 hover:bg-[#ff0000] ease-in-out">Sign Up</button>
-                    <button @click="emitOpenLogin" class="ease-in-out duration-300 border-2 border-[#ff0000] hover:font-medium rounded-xl px-4 py-2 hover:bg-[#ff0000]">Login</button>
+                    <button @click="gotoLogin" class="ease-in-out duration-300 border-2 border-[#ff0000] hover:font-medium rounded-xl px-4 py-2 hover:bg-[#ff0000]">Login</button>
                 </div>
             </form>
         </div>
@@ -47,14 +47,28 @@ export default{
             username: '',
             email: '',
             password: '',
-            image: null
+            image: null,
+            message: 'Select Profile Pic'
         }
     },
     methods: {
-        emitCloseSignUp(){this.$emit('closeSignUp')},
 
-        emitOpenLogin(){this.$emit('openLoginFS')},
-
+        gotoMainSite(){
+            this.$router.push({name: 'MainSite'})
+        },
+        gotoLogin(){
+            this.$router.push({name: 'Login'})
+        },
+        //save name of file instead of label when user enter file
+        displayFileName(){
+            let message = this.$refs.imageFile.files[0].name
+            if(message.length > 15){
+                this.message = message.substring(0, 15) + '...'
+            }
+            else{
+                this.message = message
+            }
+        },
         submitSignUp(event){
 
             event.preventDefault()
@@ -69,10 +83,10 @@ export default{
             axios.post('/api/auth/signup', formData, {
                 headers: {'Content-Type': 'multipart/form-data'}
             }).then(response => {
-                const {user, token} = response.data
-                emitOpenLogin()
+                window.alert(response.data.message)
+                this.$router.push({name: 'Login'})
             }).catch(err => {
-                console.log(err.message)
+                window.alert(err.message)
             })
 
         }

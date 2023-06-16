@@ -10,37 +10,61 @@
     </div>
     <div class="my-auto flex justify-between gap-6 align-middle">
       <button @mouseenter="() => notifOpen = true" @mouseleave="notifOpen = false" v-if="signedIn" class="mt-1"><font-awesome-icon icon="fa-solid fa-bell" size="sm" style="color: #a5a5a5;" /></button>
-      <NotifMenu @mouseenter="() => notifOpen = true" @mouseleave="notifOpen = false" v-if="notifOpen"/>
-      <button v-if="signedIn" @mouseenter="() => menuOpen = true" @mouseleave="menuOpen = false"><img class="w-[26px] h-[26px] rounded-full" src="../../../images/cameron.png" alt=""></button>
-      <div v-else class="mt-1 w-19 h-8 rounded-full flex align-middle justify-between border-highlightBlue border-2 px-[2px] pt-[1px]"><button @click="emitLoginToggle"><font-awesome-icon icon="fa-solid fa-circle-user" size="lg" style="color: #377cb7;" /><span class="text-highlightBlue font-Roboto ml-1 text-xs relative bottom-[2px]">Sign In</span></button></div>
-      <UserMenu @mouseenter="() => menuOpen = true" @mouseleave="menuOpen = false" v-if="menuOpen"/>
+      <NotifMenu @click="() => notifOpen = true" @mouseleave="notifOpen = false" v-if="notifOpen"/>
+      <button v-if="signedIn" @mouseenter="() => menuOpen = true" @mouseleave="menuOpen = false"><img class="w-[26px] h-[26px] rounded-full object-contain" :src="URL" alt=""></button>
+      <div v-else class="mt-1 w-19 h-8 rounded-full flex align-middle justify-between border-highlightBlue border-2 px-[2px] pt-[1px]"><button @click="gotoLogin"><font-awesome-icon icon="fa-solid fa-circle-user" size="lg" style="color: #377cb7;" /><span class="text-highlightBlue font-Roboto ml-1 text-xs relative bottom-[2px]">Sign In</span></button></div>
+      <UserMenu :url="URL" @mouseenter="() => menuOpen = true" @mouseleave="menuOpen = false" v-if="menuOpen"/>
     </div>
   </nav>
 </template>
 
 <script>
-// import NotifMenu from './NotifMenu.vue'
-// import UserMenu from './UserMenu.vue'
+import axios from 'axios'
+import { useUserStore } from '../../stores/userStore'
+import UserMenu from '../userMenu/UserMenu.vue'
 
 export default{
   name: 'Navbar',
-//   components: { UserMenu, NotifMenu },
+  components: { UserMenu},
   data(){
     return {
       signedIn: false,
       menuOpen: false,
       notifOpen: false,
-      searchText: ''
+      searchText: '',
+      URL: "http://localhost:4000/api/file/" + useUserStore().getProfilePic
     }
   },
   methods: {
-    emitLoginToggle(){
-      this.$emit('openLogin')
+    gotoLogin(){
+      this.$router.push({name: 'Login'})
     },
     emitToggleSidebar(){
       this.$emit('toggleSidebar')
+    },
+    setProfileURL() {
+        axios.get('/api/user/profilePic')
+        .then((res) => {
+        })
+        .catch((err) => {
+            console.log(err)
+        })
     }
   },
+  updated(){
+    axios.get('/api/auth/info')
+    .then(res => {
+      useUserStore().setUser(res.data.user)
+      this.signedIn = true
+      this.setProfileURL()
+    })
+    .catch(err => {
+      this.signedIn = false
+    })
+  },
+  watch:{
+    
+  }
 }
 
 </script>

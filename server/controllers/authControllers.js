@@ -4,8 +4,9 @@ const config = require('../config/config')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const crypto = require('node:crypto');
-const { getFile, putFile, deleteFile } = require('../utils/s3');
-const { DateTime } = require('luxon')
+const { putFile } = require('../utils/s3');
+const { Op } = require('sequelize');
+const { DateTime } = require('luxon');
 
 const randomKey = () => {return crypto.randomBytes(32).toString('hex')}
 
@@ -13,30 +14,16 @@ module.exports.signupController = createController(
     async (req, res) => {
         
         try{
-            
-            console.log(req.body)
-            console.log(req.file)
-
-            //Check if User is existing user
-            const existingUser = await User.findOne({where: { Email: req.body.email }})
-            if(existingUser){
-                return res.status(400).send({message: "User already exists"})
-            }
-
             //Hashing password
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
-            //Uploading file to s3 bucket::/profile_pic
-            const key = 'profile/' + randomKey()
-            try{putFile(key, req.file.buffer)}
-            catch(err){return res.status(500).send({message: "File Upload Error"})}
-
             //Adding User to database
             const date = DateTime.now().toISO()
+            const key = 'profile/' + randomKey()
 
             const result = await User.create({
                 Email: req.body.email,
-                UserID: randomKey(),
+                id: randomKey(),
                 UserName: req.body.username,
                 Password: hashedPassword,
                 Profile_Pic: key,
@@ -44,10 +31,82 @@ module.exports.signupController = createController(
                 Notif_Check_At: null
             })
 
-            //Creating and Sending JWT
-            const token = jwt.sign({email: result.Email, id: result.UserID}, config.app.JWT_SECRET)
-            res.status(201).send({user: result, token: token});
+            //Uploading file to s3 bucket::/profile_pic
+            try{putFile(key, req.file.buffer)}
+            catch(err){
+                await User.destroy({where: {id: result.id}})
+                return res.status(500).send({message: "File Upload Error"})
+            }
 
+            res.status(201).send({message: "User Created Successfully"});
+
+        }
+        catch(err){
+            res.status(500).send({message: err.message})
+        }
+    }
+)
+
+module.exports.loginController = createController(
+    async (req, res) => {
+        try{
+            //Checking if user exists
+            const result = await User.findOne({where: {Email: req.body.email}})
+
+            if(result === null){
+                return res.status(401).send({message: "Invalid Credentials"})
+            }
+
+            //Checking if password is correct
+            if(await bcrypt.compare(req.body.password, result.Password)){
+                //Creating token
+                const token = jwt.sign(
+                    {id: result.id},
+                    config.app.JWT_SECRET, 
+                    {expiresIn: '24h'}
+                )
+                //Sending back token as cookie
+                res.cookie('jwt', token, {
+                    httpOnly: true,
+                    maxAge: 24*60*60*1000
+                })
+            }
+            else{
+                return res.status(401).send({message: "Invalid Credentials"})
+            }
+        }
+        catch(err){
+            res.status(500).send({message: err.message})
+        }
+    }
+)
+
+module.exports.infoController = createController(
+    async (req, res) => {
+        try{
+            const cookie = req.cookies['jwt']
+            const claims = jwt.verify(cookie, config.app.JWT_SECRET)
+
+            if(!claims){
+                return res.status(401).send({message: "Not Authenticated"})
+            }
+
+            const result = await User.findOne({where: {id: claims.id}})
+
+            const {Password, ...user} = await result.toJSON()
+            res.status(200).send({message: "User Authenticated Successfully", user: user})
+        }
+        catch(err){
+            res.status(500).send({message: err.message})
+        }
+    }
+)
+
+module.exports.logoutController = createController(
+    async (req, res) => {
+        try{
+            res.clearCookie('jwt')
+            res.status(200).send({message: "Logout Successful"})
         }
         catch(err){
             res.status(500).send({message: err.message})

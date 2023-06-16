@@ -13,8 +13,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 //Routes
-// route::authentication::login || signup
+// route::authentication::login || signup || logout
 app.use('/api/auth', require('./routes/authRoutes.js'))
+// route::user
+app.use('/api/user', require('./routes/userRoutes.js'))
+// route::file
+app.use('/api/file', require('./routes/fileRoutes.js'))
 
 //connect to database
 sequelize.authenticate()
@@ -22,7 +26,7 @@ sequelize.authenticate()
     .catch(err => console.log(err))
 
 //syncing database
-sequelize.sync({force: true})
+sequelize.sync({force: false})
     .then(() => {
         app.listen(port, () => {
             console.log(`Server is running on port ${port}`)
