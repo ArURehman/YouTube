@@ -8,8 +8,8 @@
             </div>
         </div>
         <div class="bg-almostBlack w-full h-[79%] overflow-y-auto scrollbar-thin scrollbar-thumb-gray scrollbar-track-searchBarGray scrollbar-thumb-rounded">
-            <button @click="gotoCreateChannel" class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
-                <font-awesome-icon class="mt-2 ml-1" icon="fa-solid fa-user" size="xs" /><span class="mx-3 mt-[6px]">Your Channel</span>
+            <button @click="handleChannel" class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
+                <font-awesome-icon class="mt-2 ml-1" icon="fa-solid fa-user" size="xs" /><span class="mx-3 mt-[6px]">{{ message }}</span>
             </button>
             <hr class="border-none h-[2px] bg-gray my-1">   
             <div class="">
@@ -20,7 +20,7 @@
             <button @click="logoutUser" class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
                 <font-awesome-icon class="mt-2 ml-1" icon="fa-solid fa-right-from-bracket" size="xs" style="color: #ffffff;" /><span class="mx-3 mt-[6px]">Logout</span>
             </button>
-            <button class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
+            <button v-if="channel" class=" my-1 bg-almostBlack w-full h-9 px-3 py-1 hover:bg-gray hover:rounded-sm cursor-pointer flex justify-start ease-in-out duration-200">
                 <font-awesome-icon class="mt-2 ml-1" icon="fa-solid fa-trash-can" size="xs" style="color: #ff0000;" /><span class="mx-3 mt-[6px] text-[#ff0000]">Delete Channel</span>
             </button>
         </div>
@@ -39,7 +39,11 @@ export default{
         return{
             email: useUserStore().getEmail,
             name: useUserStore().getUsername,
-            URL: "http://localhost:4000/api/file/" + useUserStore().getProfilePic
+            URL: "http://localhost:4000/api/file/" + useUserStore().getProfilePic,
+            data: {
+                id: useUserStore().getID
+            },
+            channelID: null
         }
     },
     methods:{
@@ -53,10 +57,31 @@ export default{
                 console.log(err)
             })
         },
-        gotoCreateChannel(){
-            this.$router.push({name: 'CreateChannel'})
+        handleChannel(){
+            if(useUserStore().getHasChannel){
+                
+                axios.post('/api/channel/get-from-user', this.data)
+                .then(res => {
+                    this.channelID = res.data.channel.id
+                    useUserStore().setCurrChannelID(this.channelID)
+                    this.$router.push({name: 'Channel', params: {id: this.channelID}})
+                })
+
+            }else this.$router.push({name: 'CreateChannel'})
         }
-    }
+    },
+    computed:{
+        message(){
+            if(useUserStore().getHasChannel){
+                return 'Your Channel'
+            }else{
+                return 'Create Channel'
+            }
+        },
+        channel(){
+            return useUserStore().getHasChannel
+        }
+    },
 }
 
 </script>

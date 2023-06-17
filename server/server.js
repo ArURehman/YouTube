@@ -10,13 +10,14 @@ const app = express()
 //Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 //Routes
 // route::authentication::login || signup || logout
 app.use('/api/auth', require('./routes/authRoutes.js'))
 // route::user
-// app.use('/api/user', require('./routes/userRoutes.js'))
+app.use('/api/user', require('./routes/userRoutes.js'))
 // route::file
 app.use('/api/file', require('./routes/fileRoutes.js'))
 // route::channel

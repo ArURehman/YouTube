@@ -51,25 +51,33 @@ const router = createRouter({
             component: Play
         },
         {
-            path: '/channel',
+            path: '/channel/:id?',
             name: 'Channel',
             redirect: { name : 'CHome'},
             component: Channel,
+            props: true,
+            beforeEnter: (to, from, next) => {
+              console.log(to.params.id)
+              next()
+            },
             children: [
                 {
                     path: 'home',
                     name: 'CHome',
-                    component: CHome
+                    component: CHome,
+                    props: true
                 },
                 {
                     path: 'about',
                     name: 'About',
-                    component: About
+                    component: About,
+                    props: true
                 },
                 {
                     path: 'upload',
                     name: 'Upload',
-                    component: Upload
+                    component: Upload,
+                    props: true
                 }
             ]
         }

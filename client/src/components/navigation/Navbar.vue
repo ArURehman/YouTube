@@ -11,9 +11,9 @@
     <div class="my-auto flex justify-between gap-6 align-middle">
       <button @mouseenter="() => notifOpen = true" @mouseleave="notifOpen = false" v-if="signedIn" class="mt-1"><font-awesome-icon icon="fa-solid fa-bell" size="sm" style="color: #a5a5a5;" /></button>
       <NotifMenu @click="() => notifOpen = true" @mouseleave="notifOpen = false" v-if="notifOpen"/>
-      <button v-if="signedIn" @mouseenter="() => menuOpen = true" @mouseleave="menuOpen = false"><img class="w-[26px] h-[26px] rounded-full object-contain" :src="URL" alt=""></button>
+      <button v-if="signedIn" @click="getChannelState"><img class="w-[26px] h-[26px] rounded-full object-contain" :src="URL" alt=""></button>
       <div v-else class="mt-1 w-19 h-8 rounded-full flex align-middle justify-between border-highlightBlue border-2 px-[2px] pt-[1px]"><button @click="gotoLogin"><font-awesome-icon icon="fa-solid fa-circle-user" size="lg" style="color: #377cb7;" /><span class="text-highlightBlue font-Roboto ml-1 text-xs relative bottom-[2px]">Sign In</span></button></div>
-      <UserMenu :url="URL" @mouseenter="() => menuOpen = true" @mouseleave="menuOpen = false" v-if="menuOpen"/>
+      <UserMenu v-if="menuOpen"/>
     </div>
   </nav>
 </template>
@@ -32,7 +32,7 @@ export default{
       menuOpen: false,
       notifOpen: false,
       searchText: '',
-      URL: ''
+      URL: '',
     }
   },
   methods: {
@@ -46,6 +46,21 @@ export default{
       if(useUserStore().getProfilePic === '') return
       this.URL = "http://localhost:4000/api/file/" + useUserStore().getProfilePic
     },
+    getChannelState(){
+      if(!this.menuOpen){
+        const data = {
+          id: useUserStore().getID
+        }
+        axios.post('/api/channel/get-state', data)
+        .then(res => {
+          useUserStore().setHasChannel(res.data.hasChannel)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      }
+      this.menuOpen = !this.menuOpen
+    }
   },
   mounted(){
     axios.get('/api/auth/info')

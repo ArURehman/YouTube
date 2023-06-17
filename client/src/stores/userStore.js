@@ -8,7 +8,8 @@ export const useUserStore = defineStore('user', {
         email: '',
         profilePic: '',
         authenticated: false,
-        profileURL: '',
+        hasChannel: false,
+        currChannelID: '',
         
     }),
     getters: {
@@ -18,6 +19,8 @@ export const useUserStore = defineStore('user', {
         getProfilePic: (state) => state.profilePic,
         getAuthenticated: (state) => state.authenticated,
         getProfileURL: (state) => state.profileURL,
+        getHasChannel: (state) => state.hasChannel,
+        getCurrChannelID: (state) => state.currChannelID,
         getAll: (state) => state,
     },
     actions: {
@@ -35,6 +38,12 @@ export const useUserStore = defineStore('user', {
             this.email = ''
             this.profilePic = ''
             this.authenticated = false
+        },
+        setHasChannel(hasChannel) {
+            this.hasChannel = hasChannel
+        },
+        setCurrChannelID(id) {
+            this.currChannelID = id
         }
     },
 })
