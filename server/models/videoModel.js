@@ -1,30 +1,43 @@
-const { sequelize, Sequelize } = require('../server')
-const Channel = require('./channelModel'); 
+const sequelize = require('../database')
+const {DataTypes} = require('sequelize')
 
-const Video = sequelize.define('Video', {
-    VideoId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    ChannelID:{
-      type:Sequelize.integer,
-      allowNull:false,
-    },
-    VideoDescription: {
-      type: Sequelize.STRING(255),
-      allowNull: true,
-    },
-    VideoFile: {
-      type: Sequelize.STRING(255),
-      allowNull: false,
-    },
-    VideoThumbnail: {
-      type: Sequelize.STRING(255),
-      allowNull: false,
-    },
-  });
-  
-  Channel.hasMany(Video,{foreignkey:'ChannelID'});
-  module.exports=Video;
+const Video = sequelize.define('Video', 
+    {
+        id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        ChannelID:{
+            type:DataTypes.STRING,
+            allowNull:false,
+        },
+        VideoDescription: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        VideoTitle: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        VideoFile: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        VideoThumbnail: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        VideoVisibility: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
+    }
+);
+
+Video.associate = (models) => {
+    Video.belongsTo(models.Channel, {foreignKey: 'ChannelID', targetKey: 'id'})
+}
+
+module.exports = Video;
