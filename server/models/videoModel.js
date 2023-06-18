@@ -7,7 +7,6 @@ const Video = sequelize.define('Video',
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true,
-            autoIncrement: true,
         },
         ChannelID:{
             type:DataTypes.STRING,

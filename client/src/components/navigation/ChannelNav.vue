@@ -6,7 +6,7 @@
                 <img class="w-24 h-24 rounded-full border-2 border-white object-cover" :src="profileURL" alt="">
                 <div class="mt-1">
                     <h4 class="text-[1.1rem] mb-1">{{ user.UserName }}</h4>
-                    <p class="text-[11px] text-textWhite">200M Subscribers &bull; 3K Videos</p>
+                    <p class="text-[11px] text-textWhite"><span ref="sub_count">{{ subCount }} Subscribers</span> &bull; <span ref="vid_count">{{ vidCount }} Videos</span></p>
                     <nav class="flex gap-4 mt-3">
                         <router-link :to="{ name : 'CHome', params: { id: $route.params.id } }"><span class="text-xs text-textWhite bg-searchBarGray px-3 py-[2px] rounded-3xl hover:bg-gray ease-in-out duration-300">Home</span></router-link>
                         <router-link :to="{ name : 'About', params: { id: $route.params.id } }"><span class="text-xs text-textWhite bg-searchBarGray px-3 py-[2px] rounded-3xl hover:bg-gray ease-in-out duration-300">About</span></router-link>
@@ -54,6 +54,26 @@ export default{
                     console.log(err)
                 }
             )
+        },
+        subCount(){
+            axios.post('/api/channel/sub-count', {id: this.channel.id})
+                .then(res => {
+                    this.$refs.sub_count.innerText = res.data.count.toString() + ' Subscribers'
+                })
+                .catch(err => {
+                    console.log(err)
+                }
+            )
+        },
+        vidCount(){
+            axios.post('/api/channel/vid-count', {id: this.channel.id})
+                .then(res => {
+                    this.$refs.vid_count.innerText = res.data.count.toString() + ' Videos'
+                })
+                .catch(err => {
+                    console.log(err)
+                }
+            )
         }
     },
     methods: {
@@ -79,7 +99,6 @@ export default{
         }
     },
     mounted(){
-        console.log(this.id)
         axios.post('/api/channel/get', this.data)
             .then(res => {
                 this.channel = res.data.channel

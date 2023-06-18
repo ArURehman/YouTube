@@ -14,5 +14,12 @@ router.post('/upload', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'video', maxCount: 1 }
 ]), channelController.uploadVideoController)
+router.post('/update-desc', channelController.updateDescController)
+router.post('/update-email', channelController.updateEmailController)
+router.post('/sub-count', channelController.subscriberCountController)
+router.post('/vid-count', channelController.getVideoCountController)
+router.post('/get-links', channelController.getLinksController)
+router.post('/add-link', channelController.addLinkController)
+router.post('/delete-link', channelController.deleteLinkController)
 
 module.exports = router
