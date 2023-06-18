@@ -66,13 +66,9 @@
 <script>
 import { useUserStore } from '../../stores/userStore'
 import axios from 'axios'
-import AddLinkVue from '../../modals/AddLink.vue'
 
 export default{
     name: 'ChannelAbout',
-    components: {
-        AddLinkVue
-    },
     data(){
         return{
             channel_desc: "",

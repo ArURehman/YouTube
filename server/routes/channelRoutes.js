@@ -21,5 +21,6 @@ router.post('/vid-count', channelController.getVideoCountController)
 router.post('/get-links', channelController.getLinksController)
 router.post('/add-link', channelController.addLinkController)
 router.post('/delete-link', channelController.deleteLinkController)
+router.post('/get-videos', channelController.getVideosController)
 
 module.exports = router

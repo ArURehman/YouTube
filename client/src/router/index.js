@@ -24,6 +24,7 @@ const router = createRouter({
       path: '/',
       name: 'MainSite',
       component: MainSite,
+      redirect: { name: 'Home'},
       children: [
         {
           path: '/home',
@@ -46,7 +47,7 @@ const router = createRouter({
             component: Library
         },
         {
-            path: '/video',
+            path: '/video/:id?',
             name: 'Play',
             component: Play
         },

@@ -38,7 +38,7 @@ export default{
     },
     methods: {
         gotoMainSite(){
-            this.$router.push({name: 'MainSite'})
+            this.$router.go(-1)
         },
         gotoSignUp(){
             this.$router.push({name: 'Register'})

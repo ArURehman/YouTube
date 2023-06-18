@@ -54,7 +54,7 @@ export default{
     methods: {
 
         gotoMainSite(){
-            this.$router.push({name: 'MainSite'})
+            this.$router.go(-1)
         },
         gotoLogin(){
             this.$router.push({name: 'Login'})

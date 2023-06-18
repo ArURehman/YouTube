@@ -218,3 +218,18 @@ module.exports.deleteLinkController = createController(
         }
     }
 )
+
+module.exports.getVideosController = createController(
+    async (req, res) => {
+        try{
+
+            const query = 'SELECT Videos.id, Videos.VideoFile, Videos.VideoThumbnail, Videos.VideoTitle, Videos.VideoVisibility, Videos.createdAt, Channels.id AS ChannelID, Users.id AS UserID, Users.UserName, Users.Profile_Pic FROM Videos INNER JOIN Channels ON Videos.ChannelID = Channels.id INNER JOIN Users ON Users.id = Channels.UserID WHERE Channels.id = :id'
+            const video = await sequelize.query(query, {replacements: {id: req.body.id}, type: QueryTypes.SELECT})
+            res.status(200).send({videos: video})
+
+        }
+        catch(err){
+            res.status(500).send({message: err.message})
+        }
+    }
+)

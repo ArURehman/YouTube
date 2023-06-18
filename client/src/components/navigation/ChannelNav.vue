@@ -38,15 +38,18 @@ export default{
             bannerURL: '',
             profileURL: '',
             isChannelUser: false,    
+            isSubscribed: false,
         }
     },
     computed: {
         isSubscribed(){
-            axios.post('/api/user/subscribe-status', {UserID: this.user.id, ChannelID: this.channel.id})
+            axios.post('/api/user/subscribe-status', {UserID: useUserStore().getID, ChannelID: this.channel.id})
                 .then(res => {
-                    if(res.data.status){
+                    if(res.data.status && useUserStore().getAuthenticated){
+                        this.isSubscribed = true
                         this.$refs.sub.innerText = 'Subscribed'
                     }else{
+                        this.isSubscribed = false
                         this.$refs.sub.innerText = 'Subscribe'
                     }
                 })
@@ -81,18 +84,27 @@ export default{
             if(!useUserStore().getAuthenticated){
                 this.$router.push({name: 'Login'})
             }else{
-                axios.post('/api/user/toggle-subscriber', {UserID: this.user.id, ChannelID: this.channel.id})
-                    .then(res => {
-                        if(res.data.status){
-                            this.$refs.sub.innerText = 'Subscribed'
-                        }else{
+                if(this.isSubscribed){
+                    axios.post('/api/user/unsubscribe', {UserID: useUserStore().getID, ChannelID: this.channel.id})
+                        .then(res => {
+                            this.isSubscribed = res.data.status
                             this.$refs.sub.innerText = 'Subscribe'
+                        })
+                        .catch(err => {
+                            console.log(err)
                         }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    }
-                )
+                    )
+                }else{
+                    axios.post('/api/user/subscribe', {UserID: useUserStore().getID, ChannelID: this.channel.id})
+                        .then(res => {
+                            this.isSubscribed = res.data.status
+                            this.$refs.sub.innerText = 'Subscribed'
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        }
+                    )
+                }
                 window.location.reload()
             }
 
