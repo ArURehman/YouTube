@@ -1,19 +1,26 @@
-// const { sequelize, Sequelize } = require('../server');
-// const Video = require('./videoModel'); 
+const sequelize = require('../database')
+const {DataTypes} = require('sequelize')
 
-// const Tag= sequelize.define('Tag', {
+const Tag = sequelize.define('Tag', 
+    {
 
-//     VideoID: {
-//         type: Sequelize.INTEGER,
-//         allowNull: false,
-//         primaryKey: true,
-//       },
-    
-//     TagText:{
-//         type:Sequelize.STRING(255),
-//         allowNull:true,
-//     }
-//   });
+        VideoID: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: 'video_tag'
+        },
+        
+        TagText:{
+            type:DataTypes.STRING,
+            allowNull:false,
+            unique: 'video_tag'
+        }
+        
+    }
+);
 
-//   Tag.belongsto(Video, { foreignKey: 'VideoID' });
-//   module.expors=Tag;
+Tag.associate = (models) => {
+    Tag.belongsTo(models.Video, {foreignKey: 'VideoID', targetKey: 'id'})
+}
+  
+module.expors = Tag;

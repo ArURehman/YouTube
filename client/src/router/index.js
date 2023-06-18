@@ -49,6 +49,7 @@ const router = createRouter({
         {
             path: '/video/:id?',
             name: 'Play',
+            props: true,
             component: Play
         },
         {

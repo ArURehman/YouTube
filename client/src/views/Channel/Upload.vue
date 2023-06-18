@@ -5,6 +5,13 @@
             <textarea maxlength="50" required v-model="title" placeholder="Title" class="h-16 text-sm w-full min-h-10 p-2 bg-searchBarGray rounded overflow-hidden break-words resize-x whitespace-normal outline-none text-textWhite"></textarea>
             <textarea maxlength="250" required v-model="description" placeholder="Description" class="h-24 text-sm w-full min-h-10 p-2 bg-searchBarGray rounded overflow-hidden break-words resize-x whitespace-normal outline-none text-textWhite"></textarea>
         </div>
+        <div>
+            <h4 class="mt-2 mb-2 text-base font-medium ml-1">Tags:</h4>
+            <div @keydown.space="addTag" class="flex w-full h-11 p-2 rounded-md bg-searchBarGray text-textWhite">
+                <span v-for="(tag, index) in tags" class="text-sm mt-[1px] ml-1 rounded-md bg-gray px-2">{{ tag }}<button class="ml-1 rounded-full p-1 hover:bg-gray" @click="deleteTag(index)"><font-awesome-icon icon="fa-solid fa-x" size="xs" style="color: #ffffff;" /></button></span>
+                <textarea max-length="250" required v-model="tag" ref="tagInput" type="text" class="pt-1 overflow-hidden break-words resize-x whitespace-normal flex-1 h-full border-none outline-none text-sm bg-searchBarGray text-textWhite"></textarea>
+            </div>
+        </div>
         <div class="flex gap-2 mt-3">
             <h4 class="mt-4 mb-4 text-base font-medium ml-1">Video:</h4>
             <div class="relative top-2 py-2">
@@ -56,6 +63,8 @@ export default{
             title: '',
             description: '',
             visibility: true,
+            tags: [],
+            tag: '',
         }
     },
     methods: {
@@ -98,11 +107,34 @@ export default{
             })
             .then(res => {
                 window.alert(res.data.message)
+                axios.post('/api/video/tags', {id: this.id, tags: this.tags})
+                .then(res => {
+                    console.log(res.data.message)
+                })
+                .catch(err => {
+                    console.log(err.response.data.message)
+                })
                 window.location.reload()
             })
             .catch(err => {
-                window.alert(err.response.data.message)
+                window.alert(err.data.message)
             })
+        },
+        handleTagUpload(){
+            
+        },
+        addTag(){
+            if(this.tags.includes(this.tag)){
+                this.tag = ''
+                return
+            }
+            this.tags.push(this.tag)
+            this.tag = ''
+        },
+        deleteTag(index){
+            this.tags.splice(index, 1)
+            const filteredArray = this.tags.filter(Boolean);
+            console.log(filteredArray);
         }
     }
 }

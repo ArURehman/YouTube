@@ -9,7 +9,7 @@
                     <router-link :to="{name : 'Channel', params: {id: video.ChannelID}}"><p class="text-[10px] text-[#a5a5a5] mb-[2px] hover:text-white">{{ video.Username }}</p></router-link>
                     <router-link :to="{name : 'Play', params: {id: video.id}}"><p class="text-[9px] text-[#a5a5a5]">200M Views &bull; <span>{{ getUploadDate(video) }}</span></p></router-link>
                 </div>
-                <button class="relative -top-3 -right-9" :class="{ 'hidden': !isHovered }"><font-awesome-icon icon="fa-solid fa-ellipsis-vertical" size="xs" style="color: #ffffff;" /></button>
+                <!-- <button class="relative -top-3 -right-8" :class="{ 'hidden': !isHovered }"><font-awesome-icon icon="fa-solid fa-ellipsis-vertical" size="xs" style="color: #ffffff;" /></button> -->
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@ export default{
     props: ['videos', 'isChannelUser'],
     data(){
         return{
-            isHovered: false
+            isHovered: [false]
         }
     },
     mounted(){
@@ -61,8 +61,8 @@ export default{
         },
         displayTitle(video){
             let message = video.VideoTitle
-            if(message.length > 30){
-                return message.substring(0, 30) + '...'
+            if(message.length > 26){
+                return message.substring(0, 26) + '...'
             }
             else{
                 return message
