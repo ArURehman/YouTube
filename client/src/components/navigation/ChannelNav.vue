@@ -15,7 +15,7 @@
                     </nav>
                 </div>
             </div>
-            <SubscribeBtn :id="channel.id" />
+            <SubscribeBtn @reload="() => window.location.reload()" :id="channel.id" />
         </div>
         <div class="border-b-2 border-b-gray flex justify-around mb-2"></div>
     </div>

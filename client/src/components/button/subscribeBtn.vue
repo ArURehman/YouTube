@@ -1,5 +1,5 @@
 <template>
-    <button @click="toggleSubscribe" ref="sub" class="text-xs bg-searchBarGray h-9 px-4 mt-6 rounded-2xl hover:bg-gray ease-in-out duration-300">{{ isSubscribed }}</button>
+    <button @click="toggleSubscribe" ref="sub" class="text-xs bg-searchBarGray h-9 px-4 mt-6 rounded-2xl hover:bg-gray ease-in-out duration-300" :class="video ? 'mt-0' : 'mt-6'">{{ isSubscribed }}</button>
 </template>
 
 <script>
@@ -8,7 +8,7 @@ import { useUserStore } from '../../stores/userStore';
 
 export default{
     name: 'SubscribeBtn',
-    props: ['id'],
+    props: ['id', 'video'],
     data(){
         return{
             isSubscribed: false,

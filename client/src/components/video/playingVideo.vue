@@ -2,8 +2,8 @@
     <div class="text-white text-xs max-w-[70rem]">
         <video class="rounded-md w-[65rem] cursor-pointer" controls :src="videoURL"></video>
         <div class="flex-col mt-2">
-            <h4 class="text-sm font-medium">{{ video.VideoTitle }}</h4>
-            <div class="flex justify-between mt-2 mb-4">
+            <h4 class="text-base font-medium mt-1 mb-3 pl-1">{{ video.VideoTitle }}</h4>
+            <div class="flex justify-between mt-3">
                 <div class="flex gap-5">
                     <div class="flex gap-2">
                         <router-link :to="{name : 'Channel', params : {id: video.ChannelID}}"><img class="w-9 h-9 rounded-full" :src="profileURL" alt=""></router-link>
@@ -12,7 +12,7 @@
                             <p ref="sub_count" class="text-[9px] text-[#a5a5a5]"></p>
                         </div>
                     </div>
-                    <subscribeBtn :id="video.ChannelID"/>
+                    <subscribeBtn class="relative -top-6" @reload="() => window.location.reload()" :id="video.ChannelID" :video="true"/>
                 </div>
                 <div class="flex justify-end gap-4">
                     <div class="flex gap-5 bg-searchBarGray px-3 py-[6px] h-8 rounded-2xl">
@@ -23,9 +23,9 @@
                 </div>
             </div>
         </div>
-        <div class="bg-searchBarGray p-2 rounded-xl">
+        <div class="bg-searchBarGray py-3 px-4 rounded-xl">
             <p class="text-[11px] text-[#a5a5a5]">200M Views &bull; <span ref="uploadDate"></span></p>
-            <p class="mb-2 pt-[2px]">{{ video.VideoDescription }}</p>
+            <p class="mt-1 pt-[2px]">{{ video.VideoDescription }}</p>
         </div>
     </div>
 </template>
