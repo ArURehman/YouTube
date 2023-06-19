@@ -15,7 +15,7 @@
                     </nav>
                 </div>
             </div>
-            <button @click="toggleSubscribe" ref="sub" class="text-xs bg-searchBarGray h-9 px-4 mt-6 rounded-2xl hover:bg-gray ease-in-out duration-300">{{ isSubscribed }}</button>
+            <SubscribeBtn :id="channel.id" />
         </div>
         <div class="border-b-2 border-b-gray flex justify-around mb-2"></div>
     </div>
@@ -24,10 +24,12 @@
 <script>
 import axios from 'axios'
 import { useUserStore } from '../../stores/userStore'
+import SubscribeBtn from '../button/subscribeBtn.vue'
 
 export default{
     name: 'ChannelNav',
     props: ['id'],
+    components: { SubscribeBtn },
     data(){
         return{
             channel: {},
@@ -42,22 +44,6 @@ export default{
         }
     },
     computed: {
-        isSubscribed(){
-            axios.post('/api/user/subscribe-status', {UserID: useUserStore().getID, ChannelID: this.channel.id})
-                .then(res => {
-                    if(res.data.status && useUserStore().getAuthenticated){
-                        this.isSubscribed = true
-                        this.$refs.sub.innerText = 'Subscribed'
-                    }else{
-                        this.isSubscribed = false
-                        this.$refs.sub.innerText = 'Subscribe'
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                }
-            )
-        },
         subCount(){
             axios.post('/api/channel/sub-count', {id: this.channel.id})
                 .then(res => {
@@ -77,37 +63,6 @@ export default{
                     console.log(err)
                 }
             )
-        }
-    },
-    methods: {
-        toggleSubscribe(){
-            if(!useUserStore().getAuthenticated){
-                this.$router.push({name: 'Login'})
-            }else{
-                if(this.isSubscribed){
-                    axios.post('/api/user/unsubscribe', {UserID: useUserStore().getID, ChannelID: this.channel.id})
-                        .then(res => {
-                            this.isSubscribed = res.data.status
-                            this.$refs.sub.innerText = 'Subscribe'
-                        })
-                        .catch(err => {
-                            console.log(err)
-                        }
-                    )
-                }else{
-                    axios.post('/api/user/subscribe', {UserID: useUserStore().getID, ChannelID: this.channel.id})
-                        .then(res => {
-                            this.isSubscribed = res.data.status
-                            this.$refs.sub.innerText = 'Subscribed'
-                        })
-                        .catch(err => {
-                            console.log(err)
-                        }
-                    )
-                }
-                window.location.reload()
-            }
-
         }
     },
     mounted(){

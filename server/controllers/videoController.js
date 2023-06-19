@@ -30,3 +30,16 @@ module.exports.postTagsController = createController(
         }
     }
 )
+
+module.exports.getPlayingVideoController = createController(
+    async (req, res) => {
+        try{
+            const query = 'SELECT Videos.VideoDescription, Videos.VideoTitle, Videos.VideoFile, Videos.createdAt, Channels.id AS ChannelID, Users.id AS UserID, Users.UserName, Users.Profile_Pic FROM Videos INNER JOIN Channels ON Videos.ChannelID = Channels.id INNER JOIN Users ON Users.id = Channels.UserID WHERE Videos.id = :id'
+            const video = await sequelize.query(query, {replacements: {id: req.body.id}, type: QueryTypes.SELECT})
+            res.status(200).json({video: video})
+        }
+        catch(err){
+            res.status(500).json({message: err.message})
+        }
+    }
+)
