@@ -12,14 +12,13 @@
                             <p ref="sub_count" class="text-[9px] text-[#a5a5a5]"></p>
                         </div>
                     </div>
-                    <subscribeBtn class="relative -top-6" @reload="() => window.location.reload()" :id="video.ChannelID" :video="true"/>
+                    <subscribeBtn class="relative -top-6" @reload="windowReload()" :id="video.ChannelID" :video="true"/>
                 </div>
                 <div class="flex justify-end gap-4">
                     <div class="flex gap-5 bg-searchBarGray px-3 py-[6px] h-8 rounded-2xl">
                         <button class="border-r-2 border-r-white pr-5"><font-awesome-icon icon="fa-solid fa-thumbs-up" size="md" style="color: #ffffff;" /></button>
                         <button><font-awesome-icon icon="fa-solid fa-thumbs-down" size="md" style="color: #ffffff;" /></button>
                     </div>
-                    <button class="bg-searchBarGray px-3 py-[6px] h-8 rounded-2xl">Save</button>
                 </div>
             </div>
         </div>
@@ -73,6 +72,9 @@ export default{
                 }
             )
         },
+        windowReload(){
+            window.location.reload();
+        }
     },
     mounted(){
         axios.post(`/api/video/playing`, {id: this.id})

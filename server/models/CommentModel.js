@@ -1,38 +1,42 @@
-// const { sequelize, Sequelize } = require('../server');
+const sequelize = require('../database')
+const {DataTypes} = require('sequelize')
 
-// const User = require('./userModel'); 
-// const Video = require('./videoModel'); 
+const Comment = sequelize.define('Comment', 
+    {
+        
+        id:{
+            type:DataTypes.STRING,
+            allowNull:false,
+            primaryKey:true,
+        },
+        Parent_ComID:{
+            type:DataTypes.STRING,
+            allowNull:true,
+        },
+        UserID:{
+            type:DataTypes.STRING,
+            allowNull:false,
+        },
+        VideoID: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        Com_Text:{
+            type:DataTypes.STRING,
+            allowNull:false,
+        },
+        createdAt:{
+            type:DataTypes.DATE,
+            allowNull:false,
+        },
 
-// const Comment = sequelize.define('Comment', {
-//     ComID:{
-//         type:Sequelize.integer,
-//         allowNull:false,
-//         primarykey:true,
-//     },
-//     Parent_ComID:{
-//         type:Sequelize.INTEGER,
-//         allowNull:true,
-//     },
-//     UserID:{
-//       type:Sequelize.integer,
-//       allowNull:false,
-//     },
-//     VideoID: {
-//         type: Sequelize.INTEGER,
-//         allowNull: false,
-//     },
-//     Com_Text:{
-//         type:Sequelize.STRING(255),
-//         allowNull:false,
-//     },
-//     Com_At:{
-//         type:Sequelize.DATE,
-//         allowNull:false,
-//     },
+    }
+    
+);
 
-//   });
+Comment.associate = (models) => {
+    Comment.belongsTo(models.User, {foreignKey: 'UserID', targetKey: 'id'})
+    Comment.belongsTo(models.Video, {foreignKey: 'VideoID', targetKey: 'id'})
+}
 
-//   Comment.belongsto(User, { foreignKey: 'UserID' });
-//   Comment.belongsto(Video, { foreignKey: 'VideoID' });
-
-//   module.exports=Comment;
+module.exports = Comment;

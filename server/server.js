@@ -24,6 +24,8 @@ app.use('/api/file', require('./routes/fileRoutes.js'))
 app.use('/api/channel', require('./routes/channelRoutes.js'))
 // route::video
 app.use('/api/video', require('./routes/videoRoutes.js'))
+// route::comment
+app.use('/api/comment', require('./routes/commentRoutes.js'))
 
 //connect to database
 sequelize.authenticate()
