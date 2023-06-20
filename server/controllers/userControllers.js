@@ -51,3 +51,16 @@ module.exports.unsubscribeController = createController(
         }
     }
 );
+
+module.exports.addHistoryController = createController(
+    async (req, res) => {
+        try{
+            const query = 'INSERT INTO History (UserID, VideoID, Watched_At) VALUES (:UserID, :VideoID, :WatchedAt)'
+            await sequelize.query(query, {replacements: {UserID: req.body.UserID, VideoID: req.body.VideoID, WatchedAt: DateTime.now().toISO()}, type: QueryTypes.INSERT});
+            res.status(200).json({ message: "Added to history" });
+        }
+        catch(err){
+            res.status(500).json({ message: err.message });
+        }
+    }
+);

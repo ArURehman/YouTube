@@ -52,7 +52,7 @@ export default{
                 this.$emit('update')
             })
             .catch(err => console.log(err))
-            }, 100);
+            }, 200);
         }
     }
 

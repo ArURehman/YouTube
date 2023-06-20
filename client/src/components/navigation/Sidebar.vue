@@ -21,13 +21,13 @@
             <router-link :to="{name : 'Channel'}"><button class="flex justify-start gap-2 py-[6px] my-1 hover:bg-gray hover:rounded-lg cursor-pointer h-7 w-full  pl-3"><img class="w-4 h-4 rounded-full" src="../../../images/cameron.png" alt=""><span>Channel Name</span></button></router-link>
             <!-- <ShowMore/> -->
         </div>
-        <hr class="border-none h-[2px] bg-gray my-1">
+        <!-- <hr class="border-none h-[2px] bg-gray my-1">
         <div class="my-1 mt-2 w-full pt-1 pb-2">
             <h4 class="text-[11px]  pl-3  mb-2">Libraries</h4>
-            <!-- The following will be wrapped in a router-link tag and will act as a way of navigating to the /libraries page -->
-            <router-link :to="{name : 'Library'}"><button class="flex justify-start gap-2 bg-almostBlack w-full h-7 py-[6px] hover:bg-gray hover:rounded-lg ease-in-out duration-200 cursor-pointer px-3 mt-2"><font-awesome-icon class="mt-[1px]"  icon="fa-solid fa-bookmark" size="lg" style="color: #ffffff;" /><span>Library Name</span></button></router-link>
+             The following will be wrapped in a router-link tag and will act as a way of navigating to the /libraries page -->
+            <!-- <router-link :to="{name : 'Library'}"><button class="flex justify-start gap-2 bg-almostBlack w-full h-7 py-[6px] hover:bg-gray hover:rounded-lg ease-in-out duration-200 cursor-pointer px-3 mt-2"><font-awesome-icon class="mt-[1px]"  icon="fa-solid fa-bookmark" size="lg" style="color: #ffffff;" /><span>Library Name</span></button></router-link> -->
             <!-- <ShowMore/> -->
-        </div>
+        <!-- </div> --> 
     </nav>
 </template>
 

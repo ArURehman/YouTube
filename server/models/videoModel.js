@@ -32,6 +32,11 @@ const Video = sequelize.define('Video',
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
+        VideoViews: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        },
     }
 );
 

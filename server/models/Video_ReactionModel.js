@@ -1,31 +1,33 @@
-// const { sequelize, Sequelize } = require('../server');
-
-// const User = require('./userModel'); 
-// const Video = require('./videoModel'); 
+const sequelize = require('../database')
+const {DataTypes} = require('sequelize')
 	
-// const Video_Reaction = sequelize.define('Video_Reaction', {
+const Video_Reaction = sequelize.define('VideoReaction', 
+    {
     
-//     UserID:{
-//       type:Sequelize.integer,
-//       allowNull:false,
-//       primaryKey:true,
-//     },
-//     VideoID: {
-//         type: Sequelize.INTEGER,
-//         allowNull: false,
-//         primaryKey: true,
-//       },
-//     Reaction :{
-//         type:Sequelize.BOOLEAN,
-//         allowNull:true,
-//     },
-//     Reaction_At:{
-//         type:Sequelize.DATE,
-//         allowNull:true,
-//     }
-//   });
+        UserID:{
+            type: DataTypes.STRING,
+            allowNull:false,
+            unique: 'video_reaction'
+        },
+        VideoID: {
+            type:  DataTypes.STRING,
+            allowNull: false,
+            unique: 'video_reaction'
+        },
+        Reaction :{
+            type: DataTypes.BOOLEAN,
+            allowNull:false,
+        },
+        Reaction_At:{
+            type: DataTypes.DATE,
+            allowNull:false,
+        }
+    }
+);
 
-//   Video_Reaction.belongsto(User, { foreignKey: 'UserID' });
-//   Video_Reaction.belongsto(Video, { foreignKey: 'VideoID' });
-  
-//   module.exports=Video_Reaction;
+Video_Reaction.associate = (models) => {
+    Video_Reaction.belongsTo(models.User, {foreignKey: 'UserID', targetKey: 'id'})
+    Video_Reaction.belongsTo(models.Video, {foreignKey: 'VideoID', targetKey: 'id'})
+}
+
+module.exports = Video_Reaction;

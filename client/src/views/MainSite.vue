@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col h-screen">
       <div class="h-10 flex-none">
-        <Navbar @toggleSidebar="() => {sidebarIsVisible = !sidebarIsVisible}" @logout="reloadPage"/>
+        <Navbar @toggleSidebar="() => {sidebarIsVisible = !sidebarIsVisible}" @reload="reloadWindow"/>
       </div>
       <div class="flex-1 flex">
         <div class="w-40 flex-none" :class="{ 'hidden' : !sidebarIsVisible }">
@@ -28,8 +28,10 @@
       let sidebarIsVisible = ref(true)
       
       const reloadPage = () => { useRouter().push({name: 'Login'}) }
+
+      const reloadWindow = () => { window.location.reload() }
   
-      return{sidebarIsVisible, reloadPage}
+      return{sidebarIsVisible, reloadPage, reloadWindow}
     }
   }
   

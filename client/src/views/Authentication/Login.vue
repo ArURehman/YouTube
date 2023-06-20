@@ -46,7 +46,7 @@ export default{
         loginUser(){
             axios.post('/api/auth/login', this.data)
             .then(res => {
-                this.$router.push({name: 'MainSite'})
+                this.$router.go(-1)
             })
             .catch(err => {
                 window.alert("Invalid Credentials")

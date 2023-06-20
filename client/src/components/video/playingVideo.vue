@@ -16,8 +16,8 @@
                 </div>
                 <div class="flex justify-end gap-4">
                     <div class="flex gap-5 bg-searchBarGray px-3 py-[6px] h-8 rounded-2xl">
-                        <button class="border-r-2 border-r-white pr-5"><font-awesome-icon icon="fa-solid fa-thumbs-up" size="md" style="color: #ffffff;" /></button>
-                        <button><font-awesome-icon icon="fa-solid fa-thumbs-down" size="md" style="color: #ffffff;" /></button>
+                        <button @click="handleLike" class="border-r-2 border-r-white pr-4 text-textWhite"><font-awesome-icon icon="fa-solid fa-thumbs-up" size="md" style="color: #ffffff;" /><span class="ml-2" ref="like">{{ likeCounter }}</span></button>
+                        <button  @click="handleDislike" class="text-textWhite"><font-awesome-icon class="mt-1" icon="fa-solid fa-thumbs-down" size="md" style="color: #ffffff;" /><span ref="dislike" class="ml-2">{{ dislikeCounter }}</span></button>
                     </div>
                 </div>
             </div>
@@ -51,6 +51,26 @@ export default{
         profileURL(){
             return `http://localhost:4000/api/file/${this.video.Profile_Pic}`;
         },
+        likeCounter(){
+            axios.post('/api/video/reaction-count', {VideoID: this.$route.params.id, Reaction: 1})
+            .then(res => {
+                console.log(res.data)
+                this.$refs.like.innerText = res.data.count[0].ReactionCount
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        dislikeCounter(){
+            axios.post('/api/video/reaction-count', {VideoID: this.$route.params.id, Reaction: 0})
+            .then(res => {
+                console.log(res.data)
+                this.$refs.dislike.innerText =  res.data.count[0].ReactionCount
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
     },
     methods:{
         getUploadDate(){
@@ -74,10 +94,32 @@ export default{
         },
         windowReload(){
             window.location.reload();
-        }
+        },
+        handleLike(){
+            if(!useUserStore().getAuthenticated) return
+            axios.post('/api/video/reaction', {UserID: useUserStore().getID, VideoID: this.$route.params.id, Reaction: 1})
+            .then(res => {
+                console.log(res.data)
+                window.location.reload();   
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        handleDislike(){
+            if(!useUserStore().getAuthenticated) return
+            axios.post('/api/video/reaction', {UserID: useUserStore().getID, VideoID: this.$route.params.id, Reaction: 0})
+            .then(res => {
+                console.log(res.data)
+                window.location.reload();
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
     },
     mounted(){
-        axios.post(`/api/video/playing`, {id: this.id})
+        axios.post(`/api/video/playing`, {id: this.$route.params.id})
         .then(res => {
             this.video = res.data.video[0];
             this.isChannelUser = useUserStore().getID == this.video.ChannelID;
